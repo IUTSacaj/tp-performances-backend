@@ -22,9 +22,9 @@ Vous pouvez utiliser ce [GSheets](https://docs.google.com/spreadsheets/d/13Hw27U
 **Temps consommé par `getDB()`** : 1.15s
 ![img_3.png](img_3.png)
 
-- **Avant** 1.15s // 31.5s
+- **Avant** getdb : 1.15s // site : 31.5s
 
-- **Après** 0.01s // 30s
+- **Après** getdb : 0.01s // site : 30s
 - ![img_4.png](img_4.png)
 
 
@@ -69,12 +69,12 @@ SELECT COUNT(wp_postmeta.meta_value) as cpt, AVG(wp_postmeta.meta_value) as moy 
 
 
 
-#### Amélioration de la méthode `METHOD` :
+#### Amélioration de la méthode `getCheapestRoom` :
 
 - **Avant** TEMPS
 
 ```sql
--- REQ SQL DE BASE
+SELECT * FROM wp_posts WHERE post_author = :hotelId AND post_type = 'room'
 ```
 
 - **Après** TEMPS

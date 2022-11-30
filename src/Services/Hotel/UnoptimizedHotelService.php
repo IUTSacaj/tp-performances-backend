@@ -148,8 +148,27 @@ class UnoptimizedHotelService extends AbstractHotelService {
     // On charge toutes les chambres de l'hôtel
       $timer = Timers::getInstance();
       $timerId = $timer->startTimer('getCheapestRoom');
-    $stmt = $this->getDB()->prepare( "SELECT * FROM wp_posts WHERE post_author = :hotelId AND post_type = 'room'" );
-    $stmt->execute( [ 'hotelId' => $hotel->getId() ] );
+    $stmt = $this->getDB()->prepare( "
+SELECT 
+post_author AS author, 
+post_content AS content,
+post_title AS title,
+post_status AS statut,
+post_type AS type,
+MIN(CAST(price.meta_value) AS INT) AS prixmin
+
+FROM wp_posts AS post
+
+INNER JOIN wp_postmeta AS price ON price.meta_id = post.ID AND price.meta_key = :price
+INNER JOIN wp_postmeta AS surface ON surface.meta_id = post.ID AND surface.meta_key = :surface
+INNER JOIN wp_postmeta AS rooms ON rooms.meta_id = post.ID AND rooms.meta_key = :rooms
+INNER JOIN wp_postmeta AS bath ON bath.meta_id = post.ID AND bath.meta_key = :bath
+INNER JOIN wp_postmeta AS type ON type.meta_id = post.ID AND type.meta_key = :type
+
+" );
+    $stmt->execute(
+        [ 'hotelId' => $hotel->getId() ]
+    );
     
     /**
      * On convertit les lignes en instances de chambres (au passage ça charge toutes les données).
