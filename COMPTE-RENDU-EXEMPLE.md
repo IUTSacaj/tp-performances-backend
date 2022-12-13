@@ -95,8 +95,9 @@ SELECT * FROM wp_posts
 
 |                              | **Avant** | **Après** |
 |------------------------------|-----------|-----------|
-| Nombre d'appels de `getDB()` | NOMBRE    | NOMBRE    |
- | Temps de `METHOD`            | TEMPS     | TEMPS     |
+| Nombre d'appels de `getDB()` | 2200      | 600       |
+ | Temps de `METHOD`            | TEMPS     | 1.56s     |
+![img_5.png](img_5.png)
 
 ## Question 6 : Création d'un service basé sur une seule requête SQL
 
