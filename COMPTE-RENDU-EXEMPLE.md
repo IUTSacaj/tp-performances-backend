@@ -64,23 +64,29 @@ SELECT * FROM wp_posts, wp_postmeta WHERE wp_posts.post_author = :hotelId AND wp
 - **Après** 7.32s
 
 ```sql
-SELECT COUNT(wp_postmeta.meta_value) as cpt, AVG(wp_postmeta.meta_value) as moy FROM wp_posts INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id AND wp_post WHERE wp_posts.post_author = :hotelId AND meta_key = 'rating' AND post_type = 'review'
+SELECT COUNT(wp_postmeta.meta_value) as cpt, AVG(wp_postmeta.meta_value) as moy FROM wp_posts INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id WHERE wp_posts.post_author = :hotelId AND meta_key = 'rating' AND post_type = 'review'
 ```
 
 
 
 #### Amélioration de la méthode `getCheapestRoom` :
 
-- **Avant** TEMPS
+- **Avant** 16.53s
 
 ```sql
 SELECT * FROM wp_posts WHERE post_author = :hotelId AND post_type = 'room'
 ```
 
-- **Après** TEMPS
+- **Après** 13.27s
 
 ```sql
--- NOUVELLE REQ SQL
+SELECT * FROM wp_posts
+      INNER JOIN wp_postmeta as surfaceData ON surfaceData.post_id = wp_posts.ID AND surfaceData.meta_key = 'surface'
+      INNER JOIN wp_postmeta as priceData ON priceData.post_id = wp_posts.ID AND priceData.meta_key = 'price'
+      INNER JOIN wp_postmeta as roomsData ON roomsData.post_id = wp_posts.ID AND roomsData.meta_key = 'bedrooms_count'
+      INNER JOIN wp_postmeta as bathRoomsData ON bathRoomsData.post_id = wp_posts.ID AND bathRoomsData.meta_key = 'bathrooms_count'
+      INNER JOIN wp_postmeta as typeData ON typeData.post_id = wp_posts.ID AND typeData.meta_key = 'type'    
+      WHERE post_author = :hotelId AND post_type = 'room'".( ! empty( $whereClause ) ? ' AND ' . implode( ' AND ', $whereClause ) : '' )." ORDER BY priceData.meta_value ASC LIMIT 1");
 ```
 
 
